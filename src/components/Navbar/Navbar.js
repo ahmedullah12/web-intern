@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useContext, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -10,10 +10,12 @@ import Container from "@mui/material/Container";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../../contexts/AuthProvider";
+import { Avatar, Button } from "@mui/material";
 
-
-function ResponsiveAppBar() {
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
+function Navbar() {
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const { user, logOut } = useContext(AuthContext);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -21,6 +23,12 @@ function ResponsiveAppBar() {
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
+  };
+
+  const handleLogOut = () => {
+    logOut()
+      .then(() => {})
+      .catch((err) => console.log(err));
   };
 
   return (
@@ -47,7 +55,7 @@ function ResponsiveAppBar() {
             LOGO
           </Typography>
 
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+          <Box sx={{ display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -60,6 +68,7 @@ function ResponsiveAppBar() {
             </IconButton>
             <Menu
               id="menu-appbar"
+              
               anchorEl={anchorElNav}
               anchorOrigin={{
                 vertical: "bottom",
@@ -76,24 +85,64 @@ function ResponsiveAppBar() {
                 display: { xs: "block", md: "none" },
               }}
             >
-              <MenuItem onClick={handleCloseNavMenu}>
-                <Link style={{ textDecoration: "none", color: "inherit" }} to="/">
-                  Home
-                </Link>
-              </MenuItem>
-              <MenuItem onClick={handleCloseNavMenu}>
-                <Link style={{ textDecoration: "none", color: "inherit" }} to="/login">
-                  Sign In
-                </Link>
-              </MenuItem>
-              <MenuItem onClick={handleCloseNavMenu}>
-                <Link style={{ textDecoration: "none", color: "inherit" }} to="/signup">
-                  Sign Up
-                </Link>
-              </MenuItem>
+                <MenuItem onClick={handleCloseNavMenu}>
+                  <Link
+                    style={{ textDecoration: "none", color: "inherit" }}
+                    to="/"
+                  >
+                    Home
+                  </Link>
+                </MenuItem>
+                {user?.email ? (
+                  [
+                    <MenuItem key={"displayName"} onClick={handleCloseNavMenu}>
+                      <Link
+                        to="/profile"
+                        style={{
+                          textDecoration: "none",
+                          color: "inherit",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "10px",
+                        }}
+                      >
+                        <Avatar alt="Remy Sharp" src={user?.photoURL} />
+                        {user?.displayName}
+                      </Link>
+                    </MenuItem>,
+                    <MenuItem key={"logoutButton"} onClick={handleCloseNavMenu}>
+                      <Button
+                        onClick={handleLogOut}
+                        color="secondary"
+                        variant="contained"
+                      >
+                        Logout
+                      </Button>
+                    </MenuItem>
+                  ]
+                ) : (
+                  [
+                    <MenuItem key={"signIn"} onClick={handleCloseNavMenu}>
+                      <Link
+                        style={{ textDecoration: "none", color: "inherit" }}
+                        to="/login"
+                      >
+                        Sign In
+                      </Link>
+                    </MenuItem>,
+                    <MenuItem key={"signUp"} onClick={handleCloseNavMenu}>
+                      <Link
+                        style={{ textDecoration: "none", color: "inherit" }}
+                        to="/signup"
+                      >
+                        Sign Up
+                      </Link>
+                    </MenuItem>
+                  ]
+                )}
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
+          <AdbIcon sx={{ display: { xs: "flex", md: "none" } }} />
           <Typography
             variant="h5"
             noWrap
@@ -102,7 +151,7 @@ function ResponsiveAppBar() {
             sx={{
               mr: 2,
               display: { xs: "flex", md: "none" },
-              flexGrow: 1,
+              
               fontFamily: "monospace",
               fontWeight: 700,
               letterSpacing: ".3rem",
@@ -112,59 +161,70 @@ function ResponsiveAppBar() {
           >
             LOGO
           </Typography>
-          <Box sx={{flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-              <MenuItem onClick={handleCloseNavMenu}>
-                <Link style={{ textDecoration: "none", color: "inherit" }} to="/">
-                  Home
-                </Link>
-              </MenuItem>
+          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+            <MenuItem>
+              <Link style={{ textDecoration: "none", color: "inherit" }} to="/">
+                Home
+              </Link>
+            </MenuItem>
+            <MenuItem>
+              <Link style={{ textDecoration: "none", color: "inherit" }}  to="/dashboard">
+                Dashboard
+              </Link>
+            </MenuItem>
           </Box>
           <Box sx={{ display: { xs: "none", md: "flex" }, mr: "60px" }}>
-            <MenuItem onClick={handleCloseNavMenu}>
-              <Link style={{ textDecoration: "none", color: "inherit" }} to="/login">
-                Sign In
-              </Link>
-            </MenuItem>
-            <MenuItem onClick={handleCloseNavMenu}>
-              <Link style={{ textDecoration: "none", color: "inherit" }} to="/signup">
-                Sign Up
-              </Link>
-            </MenuItem>
-          </Box>
-
-          {/* <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+            {user?.email ? (
+              [
+                <MenuItem key={"displayNameLarge"}>
+                  <Link
+                    to="/profile"
+                    style={{
+                      textDecoration: "none",
+                      color: "inherit",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px",
+                    }}
+                  >
+                    <Avatar alt="Remy Sharp" src={user?.photoURL} />
+                    {user?.displayName}
+                  </Link>
+                </MenuItem>,
+                <MenuItem key={"logoutLarge"}>
+                  <Button
+                    onClick={handleLogOut}
+                    color="secondary"
+                    variant="contained"
+                  >
+                    Logout
+                  </Button>
                 </MenuItem>
-              ))}
-              
-            </Menu>
-          </Box> */}
+              ]
+            ) : (
+              [
+                <MenuItem key={"signInLarge"}>
+                  <Link
+                    style={{ textDecoration: "none", color: "inherit" }}
+                    to="/login"
+                  >
+                    Sign In
+                  </Link>
+                </MenuItem>, 
+                <MenuItem key={"signUpLarge"}>
+                  <Link
+                    style={{ textDecoration: "none", color: "inherit" }}
+                    to="/signup"
+                  >
+                    Sign Up
+                  </Link>
+                </MenuItem>
+              ]
+            )}
+          </Box>
         </Toolbar>
       </Container>
     </AppBar>
   );
 }
-export default ResponsiveAppBar;
+export default Navbar;

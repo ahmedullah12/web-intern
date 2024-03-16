@@ -1,6 +1,7 @@
 import React, { createContext, useEffect, useState } from 'react';
 import {createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile} from 'firebase/auth'
 import app from "../firebase/firebase.config";
+import axios from 'axios';
 
 export const AuthContext = createContext();
 const auth = getAuth(app) 
@@ -22,11 +23,16 @@ const AuthProvider = ({children}) => {
     const logOut = () => {
         return signOut(auth)
     };
-    const updateUser = (name) => {
+    const updateUser = (name, photo) => {
         return updateProfile(auth.currentUser, {
             displayName: name,
+            photoURL: photo,
         })
     };
+
+    const saveUser = (data) => {
+        return axios.post("http://localhost:5000/app/user", data)
+    }
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser)=> {
@@ -44,6 +50,7 @@ const AuthProvider = ({children}) => {
         updateUser,
         loginWithEmail,
         user,
+        saveUser,
         logOut,
         loading
     }
