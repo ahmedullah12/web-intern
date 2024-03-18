@@ -12,6 +12,8 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Navbar from "../components/Navbar/Navbar";
 import AddBoxIcon from "@mui/icons-material/AddBox";
+import AnalyticsIcon from '@mui/icons-material/Analytics';
+import WorkHistoryIcon from '@mui/icons-material/WorkHistory';
 import ProductionQuantityLimitsIcon from '@mui/icons-material/ProductionQuantityLimits';
 import { Link, Outlet } from "react-router-dom";
 import { IconButton } from "@mui/material";
@@ -67,7 +69,7 @@ function DashboardLayout(props) {
         <ListItem>
             <ListItemButton>
               <ListItemIcon>
-                <AddBoxIcon/>
+                <AnalyticsIcon/>
               </ListItemIcon>
               <Link style={LinkStyle} to="/dashboard/sales">Sales</Link>
             </ListItemButton>
@@ -75,7 +77,7 @@ function DashboardLayout(props) {
         <ListItem>
             <ListItemButton>
               <ListItemIcon>
-                <AddBoxIcon/>
+                <WorkHistoryIcon/>
               </ListItemIcon>
               <Link style={LinkStyle} to="/dashboard/orders">Orders</Link>
             </ListItemButton>
