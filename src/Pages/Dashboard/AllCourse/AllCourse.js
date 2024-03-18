@@ -11,11 +11,16 @@ const AllCourse = () => {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
 
-
-  const { data: courses, isLoading, refetch } = useQuery({
+  const {
+    data: courses,
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: ["courses"],
     queryFn: async () => {
-      const res = await axios.get("http://localhost:5000/app/courses");
+      const res = await axios.get(
+        "https://web-intern-server-production.up.railway.app/app/courses"
+      );
       const data = await res.data.courses;
       return data;
     },
@@ -42,20 +47,20 @@ const AllCourse = () => {
     setIsConfirmModalOpen(false);
   };
 
-
   const handleDeleteCourse = (courseId) => {
-
-    axios.delete(`http://localhost:5000/app/course/${courseId}`)
-    .then(res => {
-      if(res.status === 200){
-        toast.success(res.data.message);
-        refetch();
-        setIsConfirmModalOpen(false);
-      }
-    })
-    .catch(error => console.log(error));
+    axios
+      .delete(
+        `https://web-intern-server-production.up.railway.app/app/course/${courseId}`
+      )
+      .then((res) => {
+        if (res.status === 200) {
+          toast.success(res.data.message);
+          refetch();
+          setIsConfirmModalOpen(false);
+        }
+      })
+      .catch((error) => console.log(error));
   };
-
 
   if (isLoading) return <p>Loading....</p>;
   return (
@@ -73,7 +78,9 @@ const AllCourse = () => {
               </div>
             )}
             <div style={{ flex: 1 }}>
-              <Typography variant="h6">Course Name: {course.courseName}</Typography>
+              <Typography variant="h6">
+                Course Name: {course.courseName}
+              </Typography>
               <Typography variant="body1" color="textSecondary" gutterBottom>
                 Instructor: {course.instructor}
               </Typography>
@@ -83,46 +90,42 @@ const AllCourse = () => {
               <Typography variant="body2" component="p" fontWeight={"700"}>
                 Price: ${course.price}
               </Typography>
-              <div style={{marginTop: "20px"}}>
-              <Button
-                
-                variant="contained"
-                color="primary"
-                size="small"
-                style={{ marginRight: "8px" }}
-                onClick={() => handleOpenUpdateModal(course)}
-              >
-                Update
-              </Button>
-              
-              <Button
-                variant="contained"
-                color="error"
-                size="small"
-                onClick={() => handleOpenConfirmModal(course)}
-                
-              >
-                Delete
-              </Button>
-              
+              <div style={{ marginTop: "20px" }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  style={{ marginRight: "8px" }}
+                  onClick={() => handleOpenUpdateModal(course)}
+                >
+                  Update
+                </Button>
+
+                <Button
+                  variant="contained"
+                  color="error"
+                  size="small"
+                  onClick={() => handleOpenConfirmModal(course)}
+                >
+                  Delete
+                </Button>
               </div>
             </div>
-
           </CardContent>
         </Card>
       ))}
-      <UpdateModal 
-              open={isUpdateModalOpen}
-              handleClose={handleCloseUpdateModal}
-              course={selectedCourse}
-              refetch={refetch}
-              />
+      <UpdateModal
+        open={isUpdateModalOpen}
+        handleClose={handleCloseUpdateModal}
+        course={selectedCourse}
+        refetch={refetch}
+      />
       <ConfirmationModal
-                open={isConfirmModalOpen}
-                handleClose={handleCloseConfirmModal}
-                handleConfirm={handleDeleteCourse}
-                courseId={selectedCourse?._id}
-              />
+        open={isConfirmModalOpen}
+        handleClose={handleCloseConfirmModal}
+        handleConfirm={handleDeleteCourse}
+        courseId={selectedCourse?._id}
+      />
     </>
   );
 };

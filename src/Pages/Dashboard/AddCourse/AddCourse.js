@@ -20,7 +20,7 @@ const AddCourse = () => {
 
   const handleAddCourse = (data) => {
     console.log(data, thumbnailFile);
-    const {courseName, details, instructor, price} = data;
+    const { courseName, details, instructor, price } = data;
     const imageHostKey = process.env.REACT_APP_imgbb_key;
 
     if (thumbnailFile === null) {
@@ -31,30 +31,34 @@ const AddCourse = () => {
     formData.append("image", thumbnailFile);
     const url = `https://api.imgbb.com/1/upload?key=${imageHostKey}`;
     fetch(url, {
-        method: "POST",
-        body: formData
+      method: "POST",
+      body: formData,
     })
-    .then(res => res.json())
-    .then(imgData => {
-        if(imgData.success === true){
-            const course = {
-                courseName,
-                thumbnail: imgData.data.url,
-                details,
-                instructor,
-                price,
-            }
-            axios.post("http://localhost:5000/app/course", course)
-            .then(res => {
-                if(res.status === 200){
-                    toast.success(res.data.message);
-                    reset();
-                    navigate('/dashboard/all-course');
-                }
+      .then((res) => res.json())
+      .then((imgData) => {
+        if (imgData.success === true) {
+          const course = {
+            courseName,
+            thumbnail: imgData.data.url,
+            details,
+            instructor,
+            price,
+          };
+          axios
+            .post(
+              "https://web-intern-server-production.up.railway.app/app/course",
+              course
+            )
+            .then((res) => {
+              if (res.status === 200) {
+                toast.success(res.data.message);
+                reset();
+                navigate("/dashboard/all-course");
+              }
             })
-            .catch(err => console.log(err));
+            .catch((err) => console.log(err));
         }
-    });
+      });
   };
 
   return (

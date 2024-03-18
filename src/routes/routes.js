@@ -14,62 +14,69 @@ import CourseDetails from "../Pages/CourseDetails/CourseDetails";
 import PrivateRoute from "./PrivateRoute";
 import Payment from "../Pages/Payment/Payment";
 
-export const router  = createBrowserRouter([
-    {
+export const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <MainLayout />,
+    children: [
+      {
         path: "/",
-        element: <MainLayout/>,
-        children: [
-            {
-                path: "/",
-                element: <Home/>
-            },
-            {
-                path: "/courses",
-                element: <Courses/>
-            },
-            {
-                path: "/courses/:id",
-                element: <CourseDetails/>
-            },
-            {
-                path: "/payment/:id",
-                element: <Payment/>,
-                loader: ({params}) => fetch(`http://localhost:5000/app/course/${params.id}`)
-            },
-            {
-                path: "/profile",
-                element: <PrivateRoute><Profile/></PrivateRoute>
-            },
-            {
-                path: "/login",
-                element: <Login/>
-            },
-            {
-                path: "/signup",
-                element: <SignUp/>
-            }
-        ]
-    },
-    {
-        path: "/dashboard",
-        element: <DashboardLayout/>,
-        children: [
-            {
-                path: "/dashboard/add-course",
-                element: <AddCourse/>
-            },
-            {
-                path: "/dashboard/all-course",
-                element: <AllCourse/>
-            },
-            {
-                path: "/dashboard/sales",
-                element: <AllSales/>
-            },
-            {
-                path: "/dashboard/orders",
-                element: <Orders/>
-            },
-        ]
-    }
-])
+        element: <Home />,
+      },
+      {
+        path: "/courses",
+        element: <Courses />,
+      },
+      {
+        path: "/courses/:id",
+        element: <CourseDetails />,
+      },
+      {
+        path: "/payment/:id",
+        element: <Payment />,
+        loader: ({ params }) =>
+          fetch(
+            `https://web-intern-server-production.up.railway.app/app/course/${params.id}`
+          ),
+      },
+      {
+        path: "/profile",
+        element: (
+          <PrivateRoute>
+            <Profile />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/login",
+        element: <Login />,
+      },
+      {
+        path: "/signup",
+        element: <SignUp />,
+      },
+    ],
+  },
+  {
+    path: "/dashboard",
+    element: <DashboardLayout />,
+    children: [
+      {
+        path: "/dashboard/add-course",
+        element: <AddCourse />,
+      },
+      {
+        path: "/dashboard/all-course",
+        element: <AllCourse />,
+      },
+      {
+        path: "/dashboard/sales",
+        element: <AllSales />,
+      },
+      {
+        path: "/dashboard/orders",
+        element: <Orders />,
+      },
+    ],
+  },
+]);

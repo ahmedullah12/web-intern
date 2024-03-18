@@ -21,7 +21,9 @@ function Navbar() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/app/user?email=${user?.email}`)
+      .get(
+        `https://web-intern-server-production.up.railway.app/app/user?email=${user?.email}`
+      )
       .then((res) => {
         setSavedUser(res.data.user);
       })

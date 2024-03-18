@@ -17,11 +17,7 @@ const style = {
 };
 
 const UpdateModal = ({ open, handleClose, course, refetch }) => {
-  const {
-    register,
-    handleSubmit,
-    setValue,
-  } = useForm({});
+  const { register, handleSubmit, setValue } = useForm({});
 
   useEffect(() => {
     if (course) {
@@ -39,17 +35,21 @@ const UpdateModal = ({ open, handleClose, course, refetch }) => {
       instructor: data.instructor,
       details: data.details,
       price: data.price,
-    }
+    };
 
-    axios.put(`http://localhost:5000/app/course/${course._id}`, newCourse)
-    .then(res => {
-      if(res.status === 200) {
-        toast.success(res.data.message);
-        refetch();
-        handleClose();
-      }
-    })
-    .catch(err => console.log(err))
+    axios
+      .put(
+        `https://web-intern-server-production.up.railway.app/app/course/${course._id}`,
+        newCourse
+      )
+      .then((res) => {
+        if (res.status === 200) {
+          toast.success(res.data.message);
+          refetch();
+          handleClose();
+        }
+      })
+      .catch((err) => console.log(err));
   };
 
   return (

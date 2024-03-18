@@ -1,13 +1,20 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Typography, Button, Card, CardContent, Grid, Box } from "@mui/material";
+import {
+  Typography,
+  Button,
+  Card,
+  CardContent,
+  Grid,
+  Box,
+} from "@mui/material";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { AuthContext } from "../../contexts/AuthProvider";
 
 const CheckoutForm = ({ course }) => {
-  const [cardError, setCardError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [cardError, setCardError] = useState("");
+  const [success, setSuccess] = useState("");
   const [processing, setProcessing] = useState(false);
-  const [transactionId, setTransactionId] = useState('');
+  const [transactionId, setTransactionId] = useState("");
   const [clientSecret, setClientSecret] = useState("");
   const { user, referLinkUser } = useContext(AuthContext);
   const stripe = useStripe();
@@ -18,13 +25,16 @@ const CheckoutForm = ({ course }) => {
 
   useEffect(() => {
     // Create PaymentIntent as soon as the page loads
-    fetch("http://localhost:5000/app/create-payment-intent", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ price }),
-    })
+    fetch(
+      "https://web-intern-server-production.up.railway.app/app/create-payment-intent",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ price }),
+      }
+    )
       .then((res) => res.json())
       .then((data) => {
         setClientSecret(data.clientSecret);
@@ -44,7 +54,7 @@ const CheckoutForm = ({ course }) => {
     }
 
     const { error, paymentMethod } = await stripe.createPaymentMethod({
-      type: 'card',
+      type: "card",
       card,
     });
 
@@ -52,27 +62,26 @@ const CheckoutForm = ({ course }) => {
       console.log(error);
       setCardError(error.message);
     } else {
-      setCardError('')
+      setCardError("");
     }
-    setSuccess('');
-    setProcessing(true)
-    const { paymentIntent, error: confirmError } = await stripe.confirmCardPayment(clientSecret, {
-      payment_method: {
-        card: card,
-        billing_details: {
-          name: user?.displayName,
-          email: user?.email,
+    setSuccess("");
+    setProcessing(true);
+    const { paymentIntent, error: confirmError } =
+      await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: card,
+          billing_details: {
+            name: user?.displayName,
+            email: user?.email,
+          },
         },
-      },
-    });
+      });
     if (confirmError) {
       setCardError(confirmError.message);
       return;
     }
 
-
     if (paymentIntent.status === "succeeded") {
-
       const payment = {
         buyerName: user?.displayName,
         buyerEmail: user?.email,
@@ -80,25 +89,25 @@ const CheckoutForm = ({ course }) => {
         courseName: course.courseName,
         courseId: course._id,
         date,
-        ...(referLinkUser && { referLinkUser })
-      }
-      fetch("http://localhost:5000/app/payment", {
-        method: 'POST',
+        ...(referLinkUser && { referLinkUser }),
+      };
+      fetch("https://web-intern-server-production.up.railway.app/app/payment", {
+        method: "POST",
         headers: {
-          'content-type': 'application/json'
+          "content-type": "application/json",
         },
-        body: JSON.stringify(payment)
+        body: JSON.stringify(payment),
       })
-        .then(res => res.json())
-        .then(data => {
+        .then((res) => res.json())
+        .then((data) => {
           if (data.status === true) {
-            setSuccess('Congrats! your payment completed');
+            setSuccess("Congrats! your payment completed");
             setTransactionId(paymentIntent.id);
           }
-        })
+        });
     }
-    setProcessing(false)
-  }
+    setProcessing(false);
+  };
   console.log(success);
 
   return (
@@ -154,10 +163,16 @@ const CheckoutForm = ({ course }) => {
                 Pay
               </Button>
             </form>
-            {cardError && <Typography variant="body2" color="error">{cardError}</Typography>}
+            {cardError && (
+              <Typography variant="body2" color="error">
+                {cardError}
+              </Typography>
+            )}
             {success && (
               <Box mt={"15px"}>
-                <Typography variant="body2" color="green">{success}</Typography>
+                <Typography variant="body2" color="green">
+                  {success}
+                </Typography>
                 <Typography variant="body2">
                   Your transaction id: <b>{transactionId}</b>
                 </Typography>

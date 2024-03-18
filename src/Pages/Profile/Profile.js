@@ -23,11 +23,15 @@ const Profile = () => {
   const [openModal, setOpenModal] = useState(false);
   const { user } = useContext(AuthContext);
 
-  const { data: userData, isLoading, refetch } = useQuery({
+  const {
+    data: userData,
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: ["user", user],
     queryFn: async () => {
       const res = await axios.get(
-        `http://localhost:5000/app/user?email=${user?.email}`
+        `https://web-intern-server-production.up.railway.app/app/user?email=${user?.email}`
       );
 
       const data = await res.data.user;
@@ -37,7 +41,9 @@ const Profile = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/app/user-orders?email=${user?.email}`)
+      .get(
+        `https://web-intern-server-production.up.railway.app/app/user-orders?email=${user?.email}`
+      )
       .then((res) => {
         setOrders(res.data.orders);
       })
@@ -46,7 +52,9 @@ const Profile = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/app/referedOrders?email=${user?.email}`)
+      .get(
+        `https://web-intern-server-production.up.railway.app/app/referedOrders?email=${user?.email}`
+      )
       .then((res) => {
         setReferedOrders(res.data.orders);
       })
