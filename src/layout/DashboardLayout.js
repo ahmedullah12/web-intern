@@ -12,8 +12,9 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Navbar from "../components/Navbar/Navbar";
 import AddBoxIcon from "@mui/icons-material/AddBox";
+import ProductionQuantityLimitsIcon from '@mui/icons-material/ProductionQuantityLimits';
 import { Link, Outlet } from "react-router-dom";
-import { Button, IconButton } from "@mui/material";
+import { IconButton } from "@mui/material";
 
 const drawerWidth = 240;
 
@@ -58,7 +59,7 @@ function DashboardLayout(props) {
         <ListItem>
             <ListItemButton>
               <ListItemIcon>
-                <AddBoxIcon/>
+                <ProductionQuantityLimitsIcon/>
               </ListItemIcon>
               <Link style={LinkStyle} to="/dashboard/all-course">All Course</Link>
             </ListItemButton>

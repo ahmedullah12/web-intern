@@ -1,5 +1,6 @@
 import { Typography } from "@mui/material";
 import { useDropzone } from "react-dropzone";
+import toast from "react-hot-toast";
 
 const ImageUpload = ({setFunc}) => {
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -8,7 +9,7 @@ const ImageUpload = ({setFunc}) => {
       if (file.type.startsWith("image/")) {
         setFunc(file);
       } else {
-        alert("Please upload an image file.");
+        toast.error("Please upload an image file.");
         setFunc(null);
       }
     },

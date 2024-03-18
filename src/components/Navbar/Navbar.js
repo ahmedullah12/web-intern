@@ -93,6 +93,14 @@ function Navbar() {
                     Home
                   </Link>
                 </MenuItem>
+                <MenuItem onClick={handleCloseNavMenu}>
+                  <Link
+                    style={{ textDecoration: "none", color: "inherit" }}
+                    to="/courses"
+                  >
+                    Courses
+                  </Link>
+                </MenuItem>
                 {user?.email ? (
                   [
                     <MenuItem key={"displayName"} onClick={handleCloseNavMenu}>
@@ -165,6 +173,11 @@ function Navbar() {
             <MenuItem>
               <Link style={{ textDecoration: "none", color: "inherit" }} to="/">
                 Home
+              </Link>
+            </MenuItem>
+            <MenuItem>
+              <Link style={{ textDecoration: "none", color: "inherit" }} to="/courses">
+                Courses
               </Link>
             </MenuItem>
             <MenuItem>

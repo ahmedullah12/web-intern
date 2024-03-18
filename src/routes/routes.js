@@ -9,6 +9,10 @@ import AddCourse from "../Pages/Dashboard/AddCourse/AddCourse";
 import AllCourse from "../Pages/Dashboard/AllCourse/AllCourse";
 import AllSales from "../Pages/Dashboard/Sales/AllSales";
 import Orders from "../Pages/Dashboard/Orders/Orders";
+import Courses from "../Pages/Courses/Courses";
+import CourseDetails from "../Pages/CourseDetails/CourseDetails";
+import PrivateRoute from "./PrivateRoute";
+import Payment from "../Pages/Payment/Payment";
 
 export const router  = createBrowserRouter([
     {
@@ -18,6 +22,19 @@ export const router  = createBrowserRouter([
             {
                 path: "/",
                 element: <Home/>
+            },
+            {
+                path: "/courses",
+                element: <Courses/>
+            },
+            {
+                path: "/courses/:id",
+                element: <PrivateRoute><CourseDetails/></PrivateRoute>
+            },
+            {
+                path: "/payment/:id",
+                element: <Payment/>,
+                loader: ({params}) => fetch(`http://localhost:5000/app/course/${params.id}`)
             },
             {
                 path: "/profile",

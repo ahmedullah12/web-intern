@@ -29,7 +29,7 @@ const SignUp = () => {
 
     if (profilePicture === null) {
       toast.error("Please upload a profile picture.");
-      return; // Exit the function
+      return;
     }
     
     signUpWithEmail(email, password)
