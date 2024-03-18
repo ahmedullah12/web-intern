@@ -9,6 +9,7 @@ import {
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useForm } from "react-hook-form";
 import { AuthContext } from "../../contexts/AuthProvider";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -16,12 +17,17 @@ const Login = () => {
   const {loginWithEmail} = useContext(AuthContext);
   const {register, handleSubmit, formState: {errors}} = useForm();
 
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
 
   const handleLogin = (data) => {
-    console.log(data);
     loginWithEmail(data.email, data.password)
     .then(res => {
         console.log(res.user);
+        if(res.user){
+          navigate(from, {replace: true});
+        }
     })
     .catch(err => {
         console.log(err);
@@ -32,7 +38,6 @@ const Login = () => {
   };
 
   const handleInputChange = () => {
-    setLoginError(""); // Reset loginError when user interacts with input fields
   };
   return (
     <div
@@ -111,6 +116,7 @@ const Login = () => {
             Sign In
           </Button>
         </form>
+        <p>New to CourseLounge? Please <Link to={"/signup"}>Sign Up</Link></p>
       </div>
     </div>
   );

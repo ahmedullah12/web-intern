@@ -9,6 +9,7 @@ const auth = getAuth(app)
 const AuthProvider = ({children}) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [referLinkUser, setReferLinkUser] = useState("");
 
 
     const signUpWithEmail = (email, password) => {
@@ -36,12 +37,17 @@ const AuthProvider = ({children}) => {
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser)=> {
-            setUser(currentUser); 
-            setLoading(false) 
-        });
-        return () => {
-            unsubscribe();
-        };
+            if (currentUser) {
+                setUser(currentUser);
+                setLoading(false); // Set loading to false when user data is available
+              } else {
+                setUser(null);
+                setLoading(false);
+                }
+        })
+                return () => {
+                    unsubscribe();
+                };
     },[]);
 
 
@@ -52,7 +58,9 @@ const AuthProvider = ({children}) => {
         user,
         saveUser,
         logOut,
-        loading
+        loading,
+        referLinkUser,
+        setReferLinkUser,
     }
     return (
         <AuthContext.Provider value={values}>

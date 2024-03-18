@@ -11,7 +11,7 @@ import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { AuthContext } from "../../contexts/AuthProvider";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ImageUpload from "../../components/ImageUpload/ImageUpload";
 
 const SignUp = () => {
@@ -23,7 +23,6 @@ const SignUp = () => {
   const navigate = useNavigate();
 
   const handleSignUp = (data) => {
-    console.log(data, profilePicture);
     const {email, password, name} = data;
     const imageHostKey = process.env.REACT_APP_imgbb_key;
 
@@ -35,7 +34,6 @@ const SignUp = () => {
     signUpWithEmail(email, password)
       .then((res) => {
         if (res.user.uid) {
-          const referLink = `http://localhost:3000/${res.user.email}`
           const formData = new FormData();
           formData.append('image', profilePicture);
 
@@ -47,7 +45,7 @@ const SignUp = () => {
           .then(res => res.json())
           .then(imgData => {
             if(imgData.success === true){
-              const user = {username: name, email, referLink, image: imgData.data.url};
+              const user = {username: name, email, image: imgData.data.url};
               updateUser(name, imgData.data.url)
               .then(() => {})
               .catch(err => {
@@ -181,6 +179,7 @@ const SignUp = () => {
             Sign Up
           </Button>
         </form>
+        <p>Already have an account? Please <Link to={"/login"}>Login</Link></p>
       </div>
     </div>
   );

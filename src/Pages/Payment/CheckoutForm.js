@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Typography, Button, Card, CardContent, Grid } from "@mui/material";
+import { Typography, Button, Card, CardContent, Grid, Box } from "@mui/material";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { AuthContext } from "../../contexts/AuthProvider";
 
@@ -9,7 +9,7 @@ const CheckoutForm = ({ course }) => {
   const [processing, setProcessing] = useState(false);
   const [transactionId, setTransactionId] = useState('');
   const [clientSecret, setClientSecret] = useState("");
-  const { user } = useContext(AuthContext);
+  const { user, referLinkUser } = useContext(AuthContext);
   const stripe = useStripe();
   const elements = useElements();
 
@@ -80,6 +80,7 @@ const CheckoutForm = ({ course }) => {
         courseName: course.courseName,
         courseId: course._id,
         date,
+        ...(referLinkUser && { referLinkUser })
       }
       fetch("http://localhost:5000/app/payment", {
         method: 'POST',
@@ -90,8 +91,7 @@ const CheckoutForm = ({ course }) => {
       })
         .then(res => res.json())
         .then(data => {
-          console.log(data)
-          if (data.insertedId) {
+          if (data.status === true) {
             setSuccess('Congrats! your payment completed');
             setTransactionId(paymentIntent.id);
           }
@@ -99,10 +99,11 @@ const CheckoutForm = ({ course }) => {
     }
     setProcessing(false)
   }
+  console.log(success);
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12} md={6}>
+    <Box>
+      <Grid width={"50%"} item xs={12} md={6} mb={"30px"}>
         <Card>
           <CardContent>
             <Typography variant="h6" gutterBottom>
@@ -120,7 +121,7 @@ const CheckoutForm = ({ course }) => {
           </CardContent>
         </Card>
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid width={"50%"} item xs={12} md={6}>
         <Card>
           <CardContent>
             <Typography variant="h6" gutterBottom>
@@ -155,17 +156,17 @@ const CheckoutForm = ({ course }) => {
             </form>
             {cardError && <Typography variant="body2" color="error">{cardError}</Typography>}
             {success && (
-              <div>
-                <Typography variant="body2" color="success">{success}</Typography>
+              <Box mt={"15px"}>
+                <Typography variant="body2" color="green">{success}</Typography>
                 <Typography variant="body2">
                   Your transaction id: <b>{transactionId}</b>
                 </Typography>
-              </div>
+              </Box>
             )}
           </CardContent>
         </Card>
       </Grid>
-    </Grid>
+    </Box>
   );
 };
 

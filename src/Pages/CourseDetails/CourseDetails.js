@@ -1,11 +1,27 @@
-import React from "react";
-import { Link, useParams } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { useQuery } from "react-query";
-import { Box, Button, Card, CardContent, Typography } from "@mui/material";
+import { Box, Button, Card, CardContent, IconButton, TextField, Tooltip, Typography } from "@mui/material";
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import axios from "axios";
+import { AuthContext } from "../../contexts/AuthProvider";
+import toast from "react-hot-toast";
 
 const CourseDetails = () => {
+  const [showReferLink, setShowReferLink] = useState(false);
+  const [referLink, setReferLink] = useState("");
   const { id } = useParams();
+  const { user, setReferLinkUser } = useContext(AuthContext);
+  const [searchParams] = useSearchParams();
+  
+
+  const referUser = searchParams.get("referUser");
+  useEffect(() => {
+    if(searchParams){
+      setReferLinkUser(referUser);
+    }
+  }, [referUser, searchParams, setReferLinkUser]);
+
 
   const { data: course, isLoading } = useQuery({
     queryKey: ["course", id],
@@ -18,7 +34,21 @@ const CourseDetails = () => {
   });
 
   const handleRefer = () => {
-    // Implement refer logic here
+    const customReferLink = `http://localhost:3000/courses/${id}?referUser=${user?.email}`
+    setReferLink(customReferLink);
+    setShowReferLink(true);
+  };
+
+  const copyReferLink = () => {
+    navigator.clipboard.writeText(referLink)
+      .then(() => {
+        toast.success('Link Copied to Clipboard', {
+          position: "bottom-center"
+        })
+      })
+      .catch((err) => {
+        console.error("Failed to copy refer link: ", err);
+      });
   };
 
 
@@ -33,7 +63,7 @@ const CourseDetails = () => {
         alignItems: "center",
       }}
     >
-      <Card sx={{ maxWidth: "500px" }}>
+      <Card sx={{ maxWidth: "600px" }}>
         <Box>
           <img src={course.thumbnail} alt={course.courseName} style={{ width: "100%", marginBottom: "10px" }} />
         </Box>
@@ -58,6 +88,23 @@ const CourseDetails = () => {
               Order
             </Button>
           </Box>
+          {
+            showReferLink && (
+              <Box mt={2}>
+                <Typography variant="h6" gutterBottom>
+                  Refer Link:
+                </Typography>
+                <Box display="flex" alignItems="center" sx={{ backgroundColor: '#f0f0f0', padding: '8px', borderRadius: '4px' }}>
+                  <p>{referLink}</p>
+                  <Tooltip title="Copy to Clipboard">
+                    <IconButton onClick={copyReferLink}>
+                      <ContentCopyIcon />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+              </Box>
+            )
+          }
         </CardContent>
       </Card>
     </Box>

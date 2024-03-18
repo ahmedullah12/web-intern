@@ -29,7 +29,7 @@ export const router  = createBrowserRouter([
             },
             {
                 path: "/courses/:id",
-                element: <PrivateRoute><CourseDetails/></PrivateRoute>
+                element: <CourseDetails/>
             },
             {
                 path: "/payment/:id",
@@ -38,7 +38,7 @@ export const router  = createBrowserRouter([
             },
             {
                 path: "/profile",
-                element: <Profile/>
+                element: <PrivateRoute><Profile/></PrivateRoute>
             },
             {
                 path: "/login",
